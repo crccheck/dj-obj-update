@@ -10,9 +10,12 @@ DATABASES = {
     },
 }
 
-INSTALLED_APPS = [
+INSTALLED_APPS = (
     'django.contrib.contenttypes',  # to be slightly realistic
     'dummy',
-]
+)
 
 SECRET_KEY = 'hunter2'
+
+# STFU
+SILENCED_SYSTEM_CHECKS = ('1_7.W001', )
