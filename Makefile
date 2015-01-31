@@ -1,0 +1,2 @@
+test:
+	django-admin test
