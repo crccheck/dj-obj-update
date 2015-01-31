@@ -10,4 +10,9 @@ DATABASES = {
     },
 }
 
+INSTALLED_APPS = [
+    'django.contrib.contenttypes',  # to be slightly realistic
+    'dummy',
+]
+
 SECRET_KEY = 'hunter2'

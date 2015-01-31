@@ -1,2 +1,2 @@
 test:
-	django-admin test
+	django-admin.py test
