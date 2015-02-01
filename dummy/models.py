@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class Foo(models.Model):
+class FooModel(models.Model):
     # WISHLIST one of every kind of field!
     # https://docs.djangoproject.com/en/dev/ref/models/fields/
     datetime = models.DateTimeField(null=True)
