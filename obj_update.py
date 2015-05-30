@@ -29,6 +29,7 @@ def setfield(obj, fieldname, value):
             obj._is_dirty = []
             obj._dirty_fields = []
         # obj._is_dirty.append(u'[%s %s->%s]' % (fieldname, old, value))
+        obj._is_dirty.append(fieldname)
         obj._dirty_fields.append(fieldname)
 
 
@@ -36,7 +37,7 @@ def update(obj, data):
     """
     Fancy way to update `obj` with `data` dict.
 
-    Returns True if data changed and  was saved.
+    Returns True if data changed and was saved.
     """
     for key, value in data.items():
         setfield(obj, key, value)
