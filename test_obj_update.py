@@ -4,7 +4,7 @@ import datetime
 
 from django.test import TestCase
 
-from dummy.models import FooModel
+from dummy.models import FooModel, BarModel
 
 from obj_update import update, text_type
 
@@ -108,3 +108,37 @@ class RenamemeTest(TestCase):
 
         with self.assertNumQueries(1):
             update(foo, {'text': 'hello1'})
+
+    def test_foreignkey_adding(self):
+        # setup
+        bar = BarModel.objects.create()
+        foo = FooModel.objects.create(text='hello')
+
+        with self.assertNumQueries(0):
+            update(foo, {'foreignkey': None})
+
+        with self.assertNumQueries(1):
+            update(foo, {'foreignkey': bar})
+
+    def test_foreignkey_removing(self):
+        # setup
+        bar = BarModel.objects.create()
+        foo = FooModel.objects.create(text='hello', foreignkey=bar)
+
+        with self.assertNumQueries(0):
+            update(foo, {'foreignkey': bar})
+
+        with self.assertNumQueries(1):
+            update(foo, {'foreignkey': None})
+
+    def test_foreignkey_changing(self):
+        # setup
+        bar1 = BarModel.objects.create()
+        bar2 = BarModel.objects.create()
+        foo = FooModel.objects.create(text='hello', foreignkey=bar1)
+
+        with self.assertNumQueries(0):
+            update(foo, {'foreignkey': bar1})
+
+        with self.assertNumQueries(1):
+            update(foo, {'foreignkey': bar2})
