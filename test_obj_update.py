@@ -120,9 +120,8 @@ class RenamemeTest(TestCase):
         self.assertEqual(foo.text, 'hello1')
 
     def test_foreignkey_adding(self):
-        # setup
+        foo = FooModel.objects.create(foreignkey=None)
         bar = BarModel.objects.create()
-        foo = FooModel.objects.create(text='hello')
 
         with self.assertNumQueries(0):
             update(foo, {'foreignkey': None})
@@ -133,7 +132,7 @@ class RenamemeTest(TestCase):
     def test_foreignkey_removing(self):
         # setup
         bar = BarModel.objects.create()
-        foo = FooModel.objects.create(text='hello', foreignkey=bar)
+        foo = FooModel.objects.create(foreignkey=bar)
 
         with self.assertNumQueries(0):
             update(foo, {'foreignkey': bar})
