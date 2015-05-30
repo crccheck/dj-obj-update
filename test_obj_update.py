@@ -10,7 +10,7 @@ from dummy.models import FooModel, BarModel
 from obj_update import update, text_type
 
 
-class RenamemeTest(TestCase):
+class UpdateTests(TestCase):
     def test_can_update_fields(self):
         foo = FooModel.objects.create(text='hello')
 

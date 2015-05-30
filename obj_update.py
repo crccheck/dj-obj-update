@@ -5,6 +5,10 @@ import logging
 import sys
 
 
+__all__ = ['update']
+__version__ = '0.0.0'
+
+
 DIRTY = '_is_dirty'
 
 
