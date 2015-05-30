@@ -13,19 +13,14 @@ logger = logging.getLogger('obj_update')
 def setfield(obj, fieldname, value):
     """Fancy setattr with debugging."""
     old = getattr(obj, fieldname)
-    if old is None and value is None:
-        changed = False
-    elif old is None and value is not None:
-        changed = True
-    else:
-        changed = text_type(old) != text_type(value)
-    if changed:
+    old_repr = old if old is None else text_type(old)
+    new_repr = value if value is None else text_type(value)
+    if old_repr != new_repr:
         setattr(obj, fieldname, value)
         if not hasattr(obj, '_is_dirty'):
             obj._is_dirty = []
             obj._dirty_fields = []
-        # obj._is_dirty.append(u'[%s %s->%s]' % (fieldname, old, value))
-        obj._is_dirty.append(fieldname)
+        obj._is_dirty.append(u'[%s %s->%s]' % (fieldname, old_repr, new_repr))
         obj._dirty_fields.append(fieldname)
 
 
