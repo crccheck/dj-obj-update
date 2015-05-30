@@ -30,14 +30,9 @@ def setfield(obj, fieldname, value):
 def set_foreign_field(obj, fieldname, value):
     """Fancy setattr with debugging for foreign fields."""
     old = getattr(obj, fieldname)
-    if old is None and value is None:
-        changed = False
-    elif (old is None) != (value is None):
-        changed = True
-    else:
-        # foreign key comparison
-        changed = old.pk != value.pk
-    if changed:
+    old_repr = old if old is None else old.pk
+    new_repr = value if value is None else value.pk
+    if old_repr != new_repr:
         setattr(obj, fieldname, value)
         if not hasattr(obj, '_is_dirty'):
             obj._is_dirty = []
