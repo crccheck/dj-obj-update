@@ -11,13 +11,12 @@ from obj_update import update, text_type
 
 class RenamemeTest(TestCase):
     def test_can_update_fields(self):
-        # setup
-        new_val = 'hello2'
         foo = FooModel.objects.create(text='hello')
 
-        with self.assertNumQueries(1):
+        with self.assertNumQueries(0):
             update(foo, {'text': 'hello2'})
-        self.assertEqual(FooModel.objects.get(pk=foo.pk).text, new_val)
+        # print foo.text
+        # self.assertEqual(FooModel.objects.get(pk=foo.pk).text, 'hello2')
 
     def test_no_changes_mean_no_queries(self):
         # setup
@@ -51,7 +50,7 @@ class RenamemeTest(TestCase):
             # 0 because input is python type that reprs the same
             update(foo, {'datetime': datetime.datetime(2029, 9, 20, 1, 2, 3)})
 
-        with self.assertNumQueries(1):
+        with self.assertNumQueries(0):
             # 1 because input looks close, but not quite close enough
             update(foo, {'datetime': '2029-09-20T01:02:03'})
 
@@ -69,7 +68,7 @@ class RenamemeTest(TestCase):
             # 0 because input is python type that reprs the same
             update(foo, {'datetime': '2029-09-20 01:02:03'})
 
-        with self.assertNumQueries(1):
+        with self.assertNumQueries(0):
             update(foo, {'datetime': datetime.datetime(1111, 1, 1, 1, 1, 1)})
 
     def test_decimal_a_text(self):
@@ -85,7 +84,7 @@ class RenamemeTest(TestCase):
         with self.assertNumQueries(0):
             update(foo, {'decimal': 10.1})
 
-        with self.assertNumQueries(1):
+        with self.assertNumQueries(0):
             update(foo, {'decimal': 1.01})
 
     # is this any different from text?
@@ -96,8 +95,9 @@ class RenamemeTest(TestCase):
         with self.assertNumQueries(0):
             update(foo, {'slug': 'hello'})
 
-        with self.assertNumQueries(1):
+        with self.assertNumQueries(0):
             update(foo, {'slug': 'hello1'})
+        self.assertEqual(foo.slug, 'hello1')
 
     def test_text(self):
         # setup
@@ -106,8 +106,9 @@ class RenamemeTest(TestCase):
         with self.assertNumQueries(0):
             update(foo, {'text': 'hello'})
 
-        with self.assertNumQueries(1):
+        with self.assertNumQueries(0):
             update(foo, {'text': 'hello1'})
+        self.assertEqual(foo.text, 'hello1')
 
     def test_foreignkey_adding(self):
         # setup
@@ -117,7 +118,7 @@ class RenamemeTest(TestCase):
         with self.assertNumQueries(0):
             update(foo, {'foreignkey': None})
 
-        with self.assertNumQueries(1):
+        with self.assertNumQueries(0):
             update(foo, {'foreignkey': bar})
 
     def test_foreignkey_removing(self):
@@ -127,9 +128,11 @@ class RenamemeTest(TestCase):
 
         with self.assertNumQueries(0):
             update(foo, {'foreignkey': bar})
+        self.assertEqual(foo.foreignkey, bar)
 
-        with self.assertNumQueries(1):
+        with self.assertNumQueries(0):
             update(foo, {'foreignkey': None})
+        self.assertEqual(foo.foreignkey, None)
 
     def test_foreignkey_changing(self):
         # setup
@@ -139,6 +142,8 @@ class RenamemeTest(TestCase):
 
         with self.assertNumQueries(0):
             update(foo, {'foreignkey': bar1})
+        self.assertEqual(foo.foreignkey, bar1)
 
-        with self.assertNumQueries(1):
+        with self.assertNumQueries(0):
             update(foo, {'foreignkey': bar2})
+        self.assertEqual(foo.foreignkey, bar2)
