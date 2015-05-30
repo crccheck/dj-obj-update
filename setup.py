@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='dj-obj-update',
-    version='0.0.0',
+    version='0.1.0',
     author="Chris Chang",
     author_email='c@crccheck.com',
     url="https://github.com/crccheck/dj-obj-update",

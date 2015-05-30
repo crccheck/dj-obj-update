@@ -6,7 +6,7 @@ import sys
 
 
 __all__ = ['update']
-__version__ = '0.0.0'
+__version__ = '0.1.0'
 
 
 DIRTY = '_is_dirty'
