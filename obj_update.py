@@ -5,6 +5,9 @@ import logging
 import sys
 
 
+DIRTY = '_is_dirty'
+
+
 # for python 2/3 compatibility
 text_type = unicode if sys.version_info[0] < 3 else str
 
@@ -23,9 +26,9 @@ def set_field(obj, field_name, value):
         new_repr = value if value is None else text_type(value)
     if old_repr != new_repr:
         setattr(obj, field_name, value)
-        if not hasattr(obj, '_is_dirty'):
-            obj._is_dirty = []
-        obj._is_dirty.append(dict(
+        if not hasattr(obj, DIRTY):
+            setattr(obj, DIRTY, [])
+        getattr(obj, DIRTY).append(dict(
             field_name=field_name,
             old_value=old_repr,
             new_value=new_repr,
@@ -47,11 +50,11 @@ def update(obj, data):
     """
     for field_name, value in data.items():
         set_field(obj, field_name, value)
-    dirty_data = getattr(obj, '_is_dirty', None)
+    dirty_data = getattr(obj, DIRTY, None)
     if dirty_data:
         # WISHLIST ability to also output json events
         logger.debug(human_log_formatter(dirty_data))
         update_fields = map(itemgetter('field_name'), dirty_data)
         obj.save(update_fields=update_fields)
-        delattr(obj, '_is_dirty')
+        delattr(obj, DIRTY)
         return True
