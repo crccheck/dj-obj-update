@@ -30,7 +30,7 @@ class RenamemeTest(TestCase):
         with self.assertNumQueries(0):
             update(foo, {'text': u'hello'})
 
-        # FIXME?
+        # FIXME? This fails in Python 3
         # with self.assertNumQueries(0):
         #     update(foo, {'text': b'hello'})
 

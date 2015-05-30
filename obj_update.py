@@ -19,11 +19,11 @@ def set_field(obj, field_name, value):
     old = getattr(obj, field_name)
     # is_relation is Django 1.8 only
     if obj._meta.get_field(field_name).is_relation:
-        old_repr = old if old is None else old.pk
-        new_repr = value if value is None else value.pk
+        old_repr = None if old is None else old.pk
+        new_repr = None if value is None else value.pk
     else:
-        old_repr = old if old is None else text_type(old)
-        new_repr = value if value is None else text_type(value)
+        old_repr = None if old is None else text_type(old)
+        new_repr = None if value is None else text_type(value)
     if old_repr != new_repr:
         setattr(obj, field_name, value)
         if not hasattr(obj, DIRTY):
@@ -54,7 +54,7 @@ def update(obj, data):
     if dirty_data:
         # WISHLIST ability to also output json events
         logger.debug(human_log_formatter(dirty_data))
-        update_fields = map(itemgetter('field_name'), dirty_data)
+        update_fields = list(map(itemgetter('field_name'), dirty_data))
         obj.save(update_fields=update_fields)
         delattr(obj, DIRTY)
         return True

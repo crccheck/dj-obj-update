@@ -1,0 +1,10 @@
+language: python
+# Generate this env list with:
+# tox -l | awk '{ print "  - TOX_ENV="$0}'
+env:
+  - TOX_ENV=py27-django18
+  - TOX_ENV=py33-django18
+  - TOX_ENV=py34-django18
+install: pip install tox
+script: tox -e $TOX_ENV
+sudo: false
