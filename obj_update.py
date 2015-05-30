@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import logging
 import sys
 
@@ -37,8 +39,7 @@ def set_foreign_field(obj, fieldname, value):
         if not hasattr(obj, '_is_dirty'):
             obj._is_dirty = []
             obj._dirty_fields = []
-        # obj._is_dirty.append(u'[%s %s->%s]' % (fieldname, old, value))
-        obj._is_dirty.append(fieldname)
+        obj._is_dirty.append('[%s %s->%s]' % (fieldname, old_repr, new_repr))
         obj._dirty_fields.append(fieldname)
 
 
@@ -49,6 +50,7 @@ def update(obj, data):
     Returns True if data changed and was saved.
     """
     for field_name, value in data.items():
+        # is_relation is Django 1.8 only
         if obj._meta.get_field(field_name).is_relation:
             set_foreign_field(obj, field_name, value)
         else:
