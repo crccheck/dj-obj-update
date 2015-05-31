@@ -62,3 +62,16 @@ def obj_update(obj, data):
         obj.save(update_fields=update_fields)
         delattr(obj, DIRTY)
         return True
+
+
+def obj_update_or_create(model, defaults=None, **kwargs):
+    """
+    Mimic queryset.update_or_create but using obj_update.
+    """
+    obj, created = model.objects.get_or_create(defaults=defaults, **kwargs)
+    if created:
+        # TODO logger.debug()
+        pass
+    else:
+        obj_update(obj, defaults)
+    return obj, created

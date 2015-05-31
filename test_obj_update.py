@@ -3,11 +3,11 @@ from __future__ import unicode_literals
 from decimal import Decimal
 import datetime
 
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 
 from dummy.models import FooModel, BarModel
 
-from obj_update import obj_update, text_type
+from obj_update import obj_update, obj_update_or_create, text_type
 
 
 class UpdateTests(TestCase):
@@ -157,3 +157,41 @@ class UpdateTests(TestCase):
         with self.assertNumQueries(1):
             obj_update(foo, {'foreignkey': bar2})
         self.assertEqual(foo.foreignkey, bar2)
+
+
+class ObjUpdateOrCreateTests(TransactionTestCase):
+    def test_workflow(self):
+        # Test creation
+        with self.assertNumQueries(3):
+            # 1. SELECT
+            # 2. BEGIN
+            # 3. INSERT
+            foo, created = obj_update_or_create(FooModel, text='hi', defaults={
+                'slug': 'leopard',
+            })
+        self.assertTrue(created)
+        self.assertEqual(foo.text, 'hi')
+        self.assertEqual(foo.slug, 'leopard')
+
+        # Test updating with nothing new
+        with self.assertNumQueries(1):
+            # 1. SELECT
+            foo, created = obj_update_or_create(FooModel, text='hi', defaults={
+                'slug': 'leopard',
+            })
+        self.assertFalse(created)
+        self.assertEqual(foo.text, 'hi')
+        self.assertEqual(foo.slug, 'leopard')
+
+        # Test updating with new data
+        with self.assertNumQueries(3):
+            # 1. SELECT
+            # 2. BEGIN
+            # 3. INSERT
+            foo, created = obj_update_or_create(FooModel, text='hi', defaults={
+                'slug': 'lemon', 'decimal': '0.01',
+            })
+        self.assertFalse(created)
+        self.assertEqual(foo.text, 'hi')
+        self.assertEqual(foo.slug, 'lemon')
+        self.assertEqual(foo.decimal, '0.01')

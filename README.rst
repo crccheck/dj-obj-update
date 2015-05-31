@@ -22,12 +22,25 @@ Installation
 Usage
 -----
 
-::
+Updating an object::
 
-    from obj_update import update
+    from obj_update import obj_update
 
     new_data = {
         'flavor': 'chocolate',
     }
     for obj in queryset:
-        update(obj, new_data)
+        obj_update(obj, new_data)
+
+
+Replacement for ``update_or_create``::
+
+    from obj_update import obj_update_or_create
+
+    choice, created = obj_update_or_create(
+        Choice,
+        question=question,
+        defaults={'choice_text': 'Flour or corn?'},
+    )
+
+https://docs.djangoproject.com/en/1.8/ref/models/querysets/#update-or-create
