@@ -5,7 +5,7 @@ import logging
 import sys
 
 
-__all__ = ['update']
+__all__ = ['obj_update']
 __version__ = '0.1.0'
 
 
@@ -46,7 +46,7 @@ def human_log_formatter(dirty_data):
     )
 
 
-def update(obj, data):
+def obj_update(obj, data):
     """
     Fancy way to update `obj` with `data` dict.
 
