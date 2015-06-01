@@ -46,6 +46,11 @@ def human_log_formatter(dirty_data):
     )
 
 
+def json_log_formatter(dirty_data):
+    return {x['field_name']: {'old': x['old_value'], 'new': x['new_value']}
+        for x in dirty_data}
+
+
 def obj_update(obj, data):
     """
     Fancy way to update `obj` with `data` dict.
@@ -57,7 +62,16 @@ def obj_update(obj, data):
     dirty_data = getattr(obj, DIRTY, None)
     if dirty_data:
         # WISHLIST ability to also output json events
-        logger.debug(human_log_formatter(dirty_data))
+        logger.debug(
+            human_log_formatter(dirty_data),
+            extra={
+                'obj_update': {
+                    'model': obj._meta.object_name,
+                    'pk': obj.pk,
+                    'changes': json_log_formatter(dirty_data),
+                },
+            }
+        )
         update_fields = list(map(itemgetter('field_name'), dirty_data))
         obj.save(update_fields=update_fields)
         delattr(obj, DIRTY)
@@ -70,8 +84,8 @@ def obj_update_or_create(model, defaults=None, **kwargs):
     """
     obj, created = model.objects.get_or_create(defaults=defaults, **kwargs)
     if created:
-        # TODO logger.debug()
-        pass
+        logger.debug('CREATED {} {}'.format(model._meta.object_name, obj.pk),
+            extra={'obj_update': {'pk': obj.pk}})
     else:
         obj_update(obj, defaults)
     return obj, created

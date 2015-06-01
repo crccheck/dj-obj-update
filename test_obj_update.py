@@ -1,9 +1,13 @@
 from __future__ import unicode_literals
 
 from decimal import Decimal
+from StringIO import StringIO
 import datetime
+import json
+import logging
 
 from django.test import TestCase, TransactionTestCase
+from pythonjsonlogger.jsonlogger import JsonFormatter
 
 from dummy.models import FooModel, BarModel
 
@@ -34,9 +38,37 @@ class UpdateTests(TestCase):
         # with self.assertNumQueries(0):
         #     obj_update(foo, {'text': b'hello'})
 
-    #####################
-    # MODEL FIELD TYPES #
-    #####################
+    # LOGGING
+    #########
+
+    def test_logging(self):
+        logger = logging.getLogger('obj_update')
+        log_output = StringIO()
+        handler = logging.StreamHandler(stream=log_output)
+        handler.setFormatter(JsonFormatter())
+        logger.addHandler(handler)
+        logger.setLevel(logging.DEBUG)
+        foo = FooModel.objects.create(text='hello')
+
+        obj_update(foo, {'text': 'hello2'})
+
+        log_output.seek(0)
+        logged_lines = log_output.readlines()
+        message_logged = json.loads(logged_lines[0])
+        self.assertEqual(
+            message_logged['obj_update']['model'], 'FooModel')
+        self.assertEqual(
+            message_logged['obj_update']['pk'], foo.pk)
+        self.assertEqual(
+            message_logged['obj_update']['changes']['text']['old'], 'hello')
+        self.assertEqual(
+            message_logged['obj_update']['changes']['text']['new'], 'hello2')
+
+        # HACK too lazy to remove the handler, this just silences it
+        logger.setLevel(logging.WARNING)
+
+    # MODEL FIELD TYPES
+    ###################
 
     def test_datetime_init_as_str(self):
         # setup
