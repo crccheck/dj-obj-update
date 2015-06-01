@@ -6,7 +6,7 @@ import sys
 
 
 __all__ = ['obj_update', 'obj_update_or_create']
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 
 
 DIRTY = '_is_dirty'
