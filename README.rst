@@ -22,7 +22,10 @@ Installation
 Usage
 -----
 
-Updating an object::
+Updating an object
+''''''''''''''''''
+
+::
 
     from obj_update import obj_update
 
@@ -32,8 +35,10 @@ Updating an object::
     for obj in queryset:
         obj_update(obj, new_data)
 
+Replacement for ``update_or_create``
+''''''''''''''''''''''''''''''''''''
 
-Replacement for ``update_or_create``::
+::
 
     from obj_update import obj_update_or_create
 
@@ -44,3 +49,17 @@ Replacement for ``update_or_create``::
     )
 
 https://docs.djangoproject.com/en/1.8/ref/models/querysets/#update-or-create
+
+Logging changes
+'''''''''''''''
+
+Using ``python-json-logger``::
+
+    import logging
+    from pythonjsonlogger.jsonlogger import JsonFormatter
+
+    logger = logger.getLogger('obj_update')
+    handler = logging.FileHandler('log/my_obj_changes.log')
+    handler.setFormatter(JsonFormatter())
+    logger.addHandler(handler)
+    logger.setLevel(logging.DEBUG)

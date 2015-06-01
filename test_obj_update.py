@@ -1,7 +1,11 @@
 from __future__ import unicode_literals
 
 from decimal import Decimal
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    # Python 3
+    from io import StringIO
 import datetime
 import json
 import logging

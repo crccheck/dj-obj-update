@@ -5,7 +5,7 @@ import logging
 import sys
 
 
-__all__ = ['obj_update']
+__all__ = ['obj_update', 'obj_update_or_create']
 __version__ = '0.1.0'
 
 
