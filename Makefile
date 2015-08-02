@@ -1,5 +1,13 @@
 VERSION=0.2.0
 
+help:
+	@echo "help"
+	@echo "-------------------------------------------------------"
+	@echo "make help     this help"
+	@echo "make clean    remove temporary files"
+	@echo "make test     run test suite"
+	@echo "make release  prep a release and upload to PyPI"
+
 test:
 	django-admin.py test
 
@@ -20,7 +28,7 @@ version:
 # 3. `git push --tags origin master`
 # 4. update release notes
 release: clean version
-	@-git commit -am "bump version to v$(VERSION)"
-	@-git tag $(VERSION)
+	@git commit -am "bump version to v$(VERSION)"
+	@git tag $(VERSION)
 	@-pip install wheel > /dev/null
 	python setup.py sdist bdist_wheel upload
