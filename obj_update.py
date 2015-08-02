@@ -23,8 +23,10 @@ def set_field(obj, field_name, value):
     old = getattr(obj, field_name)
     # is_relation is Django 1.8 only
     if obj._meta.get_field(field_name).is_relation:
-        old_repr = None if old is None else old.pk
-        new_repr = None if value is None else value.pk
+        # If field_name is the `_id` field, then there is no 'pk' attr and
+        # old/value *is* the pk
+        old_repr = None if old is None else getattr(old, 'pk', old)
+        new_repr = None if value is None else getattr(value, 'pk', value)
     else:
         old_repr = None if old is None else text_type(old)
         new_repr = None if value is None else text_type(value)

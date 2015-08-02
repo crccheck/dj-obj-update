@@ -165,6 +165,18 @@ class UpdateTests(TestCase):
         with self.assertNumQueries(1):
             obj_update(foo, {'foreignkey': bar})
 
+    def test_foreignkey_adding_as_id(self):
+        foo = FooModel.objects.create(foreignkey=None)
+        bar = BarModel.objects.create()
+
+        with self.assertNumQueries(0):
+            obj_update(foo, {'foreignkey': None})
+
+        with self.assertNumQueries(1):
+            obj_update(foo, {'foreignkey_id': bar.pk})
+        foo = FooModel.objects.get(pk=foo.pk)
+        self.assertEqual(foo.foreignkey, bar)
+
     def test_foreignkey_removing(self):
         # setup
         bar = BarModel.objects.create()
@@ -192,6 +204,22 @@ class UpdateTests(TestCase):
 
         with self.assertNumQueries(1):
             obj_update(foo, {'foreignkey': bar2})
+        self.assertEqual(foo.foreignkey, bar2)
+
+    def test_foreignkey_changing_as_id(self):
+        # setup
+        bar1 = BarModel.objects.create()
+        bar2 = BarModel.objects.create()
+        foo = FooModel.objects.create(text='hello', foreignkey=bar1)
+
+        with self.assertNumQueries(0):
+            obj_update(foo, {'foreignkey_id': bar1.id})
+        foo = FooModel.objects.get(pk=foo.pk)
+        self.assertEqual(foo.foreignkey, bar1)
+
+        with self.assertNumQueries(1):
+            obj_update(foo, {'foreignkey_id': bar2.id})
+        foo = FooModel.objects.get(pk=foo.pk)
         self.assertEqual(foo.foreignkey, bar2)
 
 
