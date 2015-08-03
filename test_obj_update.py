@@ -13,7 +13,7 @@ import logging
 from django.test import TestCase, TransactionTestCase
 from pythonjsonlogger.jsonlogger import JsonFormatter
 
-from dummy.models import FooModel, BarModel
+from test_app.models import FooModel, BarModel
 
 from obj_update import obj_update, obj_update_or_create, text_type
 
