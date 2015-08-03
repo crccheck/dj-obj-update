@@ -9,7 +9,7 @@ help:
 	@echo "make release  prep a release and upload to PyPI"
 
 test:
-	django-admin.py test
+	django-admin.py test --settings=test_settings
 
 clean:
 	rm -rf MANIFEST

@@ -12,7 +12,7 @@ DATABASES = {
 
 INSTALLED_APPS = (
     'django.contrib.contenttypes',  # to be slightly realistic
-    'dummy',
+    'test_app',
 )
 
 SECRET_KEY = 'hunter2'
