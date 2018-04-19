@@ -57,28 +57,41 @@ def obj_update(obj, data, *, save=True):
     """
     Fancy way to update `obj` with `data` dict.
 
-    Returns True if data changed and was saved.
+    Parameters
+    ----------
+    obj : Django model instance
+    data : dict
+        The data to update ``obj`` with
+    save : bool
+        If save=False, then don't actually save. This can be useful if you
+        just want to utilize the verbose logging.
+
+    Returns
+    -------
+    bool
+        True if data changed
     """
     for field_name, value in data.items():
         set_field(obj, field_name, value)
     dirty_data = getattr(obj, DIRTY, None)
-    if dirty_data:
-        # WISHLIST ability to also output json events
-        logger.debug(
-            human_log_formatter(dirty_data),
-            extra={
-                'obj_update': {
-                    'model': obj._meta.object_name,
-                    'pk': obj.pk,
-                    'changes': json_log_formatter(dirty_data),
-                },
-            }
-        )
-        update_fields = list(map(itemgetter('field_name'), dirty_data))
-        if save:
-            obj.save(update_fields=update_fields)
-        delattr(obj, DIRTY)
-        return True
+    if not dirty_data:
+        return False
+
+    logger.debug(
+        human_log_formatter(dirty_data),
+        extra={
+            'obj_update': {
+                'model': obj._meta.object_name,
+                'pk': obj.pk,
+                'changes': json_log_formatter(dirty_data),
+            },
+        }
+    )
+    update_fields = list(map(itemgetter('field_name'), dirty_data))
+    if save:
+        obj.save(update_fields=update_fields)
+    delattr(obj, DIRTY)
+    return True
 
 
 def obj_update_or_create(model, defaults=None, **kwargs):
