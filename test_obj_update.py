@@ -100,7 +100,7 @@ class UpdateTests(TestCase):
             # 0 because input is python type that reprs the same
             obj_update(foo, {'datetime': datetime.datetime(2029, 9, 20, 1, 2, 3)})
 
-        with self.assertNumQueries(1):
+        with self.assertNumQueries(0):
             # 1 because input looks close, but not quite close enough
             obj_update(foo, {'datetime': '2029-09-20T01:02:03'})
 
