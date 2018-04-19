@@ -9,6 +9,7 @@ except ImportError:
 import datetime
 import json
 import logging
+import os
 
 from django.test import TestCase, TransactionTestCase
 from pythonjsonlogger.jsonlogger import JsonFormatter
@@ -16,6 +17,12 @@ from pythonjsonlogger.jsonlogger import JsonFormatter
 from test_app.models import FooModel, BarModel
 
 from obj_update import obj_update, obj_update_or_create, text_type
+
+logger = logging.getLogger('obj_update')
+handler = logging.StreamHandler()
+handler.setFormatter(JsonFormatter())
+logger.addHandler(handler)
+logger.setLevel(getattr(logging, os.getenv('LOG_LEVEL', 'CRITICAL')))
 
 
 class UpdateTests(TestCase):
@@ -54,11 +61,11 @@ class UpdateTests(TestCase):
     #########
 
     def test_logging(self):
-        logger = logging.getLogger('obj_update')
         log_output = StringIO()
-        handler = logging.StreamHandler(stream=log_output)
-        handler.setFormatter(JsonFormatter())
-        logger.addHandler(handler)
+        test_handler = logging.StreamHandler(stream=log_output)
+        test_handler.setFormatter(JsonFormatter())
+        logger.removeHandler(handler)
+        logger.addHandler(test_handler)
         logger.setLevel(logging.DEBUG)
         foo = FooModel.objects.create(text='hello')
 
@@ -76,8 +83,9 @@ class UpdateTests(TestCase):
         self.assertEqual(
             message_logged['obj_update']['changes']['text']['new'], 'hello2')
 
-        # HACK too lazy to remove the handler, this just silences it
-        logger.setLevel(logging.WARNING)
+        logger.removeHandler(test_handler)
+        logger.addHandler(handler)
+        logger.setLevel(getattr(logging, os.getenv('LOG_LEVEL', 'CRITICAL')))
 
     # MODEL FIELD TYPES
     ###################

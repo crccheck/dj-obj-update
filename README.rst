@@ -35,6 +35,8 @@ Updating an object
     for obj in queryset:
         obj_update(obj, new_data)
 
+Updating an object
+
 Replacement for ``update_or_create``
 ''''''''''''''''''''''''''''''''''''
 
@@ -58,7 +60,7 @@ Using ``python-json-logger``::
     import logging
     from pythonjsonlogger.jsonlogger import JsonFormatter
 
-    logger = logger.getLogger('obj_update')
+    logger = logging.getLogger('obj_update')
     handler = logging.FileHandler('log/my_obj_changes.log')
     handler.setFormatter(JsonFormatter())
     logger.addHandler(handler)
