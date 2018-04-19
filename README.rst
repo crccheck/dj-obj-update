@@ -48,7 +48,7 @@ Replacement for ``update_or_create``
         defaults={'choice_text': 'Flour or corn?'},
     )
 
-https://docs.djangoproject.com/en/1.8/ref/models/querysets/#update-or-create
+https://docs.djangoproject.com/en/2.0/ref/models/querysets/#update-or-create
 
 Logging changes
 '''''''''''''''
