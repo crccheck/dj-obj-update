@@ -8,9 +8,9 @@ class FooModel(models.Model):
     decimal = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     slug = models.SlugField(max_length=5, null=True)
     text = models.TextField(null=True)
-    foreignkey = models.ForeignKey('BarModel', null=True)
+    foreignkey = models.ForeignKey('BarModel', null=True, on_delete=models.CASCADE)
 
 
 class BarModel(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         raise NotImplementedError('update should not be looking at repr')

@@ -13,7 +13,7 @@ DIRTY = '_is_dirty'
 
 
 # for python 2/3 compatibility
-text_type = unicode if sys.version_info[0] < 3 else str
+text_type = unicode if sys.version_info[0] < 3 else str  # noqa: F821
 
 logger = logging.getLogger('obj_update')
 
@@ -50,7 +50,7 @@ def human_log_formatter(dirty_data):
 
 def json_log_formatter(dirty_data):
     return {x['field_name']: {'old': x['old_value'], 'new': x['new_value']}
-        for x in dirty_data}
+            for x in dirty_data}
 
 
 def obj_update(obj, data):
@@ -87,7 +87,7 @@ def obj_update_or_create(model, defaults=None, **kwargs):
     obj, created = model.objects.get_or_create(defaults=defaults, **kwargs)
     if created:
         logger.debug('CREATED {} {}'.format(model._meta.object_name, obj.pk),
-            extra={'obj_update': {'pk': obj.pk}})
+                     extra={'obj_update': {'pk': obj.pk}})
     else:
         obj_update(obj, defaults)
     return obj, created

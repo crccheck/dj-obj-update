@@ -1,17 +1,12 @@
 VERSION=0.2.1
 
-help:
-	@echo "help"
-	@echo "-------------------------------------------------------"
-	@echo "make help     this help"
-	@echo "make clean    remove temporary files"
-	@echo "make test     run test suite"
-	@echo "make release  prep a release and upload to PyPI"
+help: ## Shows this help
+	@echo "$$(grep -h '#\{2\}' $(MAKEFILE_LIST) | sed 's/: #\{2\} /	/' | column -t -s '	')"
 
-test:
-	django-admin.py test --settings=test_settings
+test: ## Run test suite
+	PYTHONPATH=. django-admin.py test --settings=test_settings
 
-clean:
+clean: ## Remove temporary files
 	rm -rf MANIFEST
 	rm -rf build
 	rm -rf dist
@@ -27,6 +22,7 @@ version:
 # 2. run `make release`
 # 3. `git push --tags origin master`
 # 4. update release notes
+release: ## Cut a release and upload to PyPI
 release: clean version
 	@git commit -am "bump version to v$(VERSION)"
 	@git tag $(VERSION)
