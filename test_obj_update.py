@@ -1,21 +1,24 @@
 from __future__ import unicode_literals
 
 from decimal import Decimal
-try:
-    from StringIO import StringIO
-except ImportError:
-    # Python 3
-    from io import StringIO
+from io import StringIO
 import datetime
 import json
 import logging
+import os
 
 from django.test import TestCase, TransactionTestCase
 from pythonjsonlogger.jsonlogger import JsonFormatter
 
 from test_app.models import FooModel, BarModel
 
-from obj_update import obj_update, obj_update_or_create, text_type
+from obj_update import obj_update, obj_update_or_create
+
+logger = logging.getLogger('obj_update')
+handler = logging.StreamHandler()
+handler.setFormatter(JsonFormatter())
+logger.addHandler(handler)
+logger.setLevel(getattr(logging, os.getenv('LOG_LEVEL', 'CRITICAL')))
 
 
 class UpdateTests(TestCase):
@@ -26,6 +29,14 @@ class UpdateTests(TestCase):
             obj_update(foo, {'text': 'hello2'})
 
         foo = FooModel.objects.get(pk=foo.pk)
+        self.assertEqual(foo.text, 'hello2')
+
+    def test_can_update_fields_but_not_save(self):
+        foo = FooModel.objects.create(text='hello')
+
+        with self.assertNumQueries(0):
+            obj_update(foo, {'text': 'hello2'}, save=False)
+
         self.assertEqual(foo.text, 'hello2')
 
     def test_no_changes_mean_no_queries(self):
@@ -46,11 +57,11 @@ class UpdateTests(TestCase):
     #########
 
     def test_logging(self):
-        logger = logging.getLogger('obj_update')
         log_output = StringIO()
-        handler = logging.StreamHandler(stream=log_output)
-        handler.setFormatter(JsonFormatter())
-        logger.addHandler(handler)
+        test_handler = logging.StreamHandler(stream=log_output)
+        test_handler.setFormatter(JsonFormatter())
+        logger.removeHandler(handler)
+        logger.addHandler(test_handler)
         logger.setLevel(logging.DEBUG)
         foo = FooModel.objects.create(text='hello')
 
@@ -68,8 +79,9 @@ class UpdateTests(TestCase):
         self.assertEqual(
             message_logged['obj_update']['changes']['text']['new'], 'hello2')
 
-        # HACK too lazy to remove the handler, this just silences it
-        logger.setLevel(logging.WARNING)
+        logger.removeHandler(test_handler)
+        logger.addHandler(handler)
+        logger.setLevel(getattr(logging, os.getenv('LOG_LEVEL', 'CRITICAL')))
 
     # MODEL FIELD TYPES
     ###################
@@ -78,7 +90,7 @@ class UpdateTests(TestCase):
         # setup
         foo = FooModel.objects.create(datetime='2029-09-20 01:02:03')
         # sanity check
-        self.assertIsInstance(foo.datetime, text_type)
+        self.assertIsInstance(foo.datetime, str)
 
         with self.assertNumQueries(0):
             # 0 because input is exactly the same
@@ -113,7 +125,7 @@ class UpdateTests(TestCase):
         # setup
         foo = FooModel.objects.create(decimal='10.1')
         # sanity check
-        self.assertIsInstance(foo.decimal, text_type)
+        self.assertIsInstance(foo.decimal, str)
 
         with self.assertNumQueries(0):
             # 0 because input is exactly the same

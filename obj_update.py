@@ -1,8 +1,5 @@
-from __future__ import unicode_literals
-
 from operator import itemgetter
 import logging
-import sys
 
 
 __all__ = ['obj_update', 'obj_update_or_create']
@@ -11,9 +8,6 @@ __version__ = '0.2.1'
 
 DIRTY = '_is_dirty'
 
-
-# for python 2/3 compatibility
-text_type = unicode if sys.version_info[0] < 3 else str  # noqa: F821
 
 logger = logging.getLogger('obj_update')
 
@@ -28,8 +22,8 @@ def set_field(obj, field_name, value):
         old_repr = None if old is None else getattr(old, 'pk', old)
         new_repr = None if value is None else getattr(value, 'pk', value)
     else:
-        old_repr = None if old is None else text_type(old)
-        new_repr = None if value is None else text_type(value)
+        old_repr = None if old is None else str(old)
+        new_repr = None if value is None else str(value)
     if old_repr != new_repr:
         setattr(obj, field_name, value)
         if not hasattr(obj, DIRTY):
@@ -53,31 +47,45 @@ def json_log_formatter(dirty_data):
             for x in dirty_data}
 
 
-def obj_update(obj, data):
+def obj_update(obj, data, *, save=True):
     """
     Fancy way to update `obj` with `data` dict.
 
-    Returns True if data changed and was saved.
+    Parameters
+    ----------
+    obj : Django model instance
+    data : dict
+        The data to update ``obj`` with
+    save : bool
+        If save=False, then don't actually save. This can be useful if you
+        just want to utilize the verbose logging.
+
+    Returns
+    -------
+    bool
+        True if data changed
     """
     for field_name, value in data.items():
         set_field(obj, field_name, value)
     dirty_data = getattr(obj, DIRTY, None)
-    if dirty_data:
-        # WISHLIST ability to also output json events
-        logger.debug(
-            human_log_formatter(dirty_data),
-            extra={
-                'obj_update': {
-                    'model': obj._meta.object_name,
-                    'pk': obj.pk,
-                    'changes': json_log_formatter(dirty_data),
-                },
-            }
-        )
-        update_fields = list(map(itemgetter('field_name'), dirty_data))
+    if not dirty_data:
+        return False
+
+    logger.debug(
+        human_log_formatter(dirty_data),
+        extra={
+            'obj_update': {
+                'model': obj._meta.object_name,
+                'pk': obj.pk,
+                'changes': json_log_formatter(dirty_data),
+            },
+        }
+    )
+    update_fields = list(map(itemgetter('field_name'), dirty_data))
+    if save:
         obj.save(update_fields=update_fields)
-        delattr(obj, DIRTY)
-        return True
+    delattr(obj, DIRTY)
+    return True
 
 
 def obj_update_or_create(model, defaults=None, **kwargs):
