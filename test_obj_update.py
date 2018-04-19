@@ -71,13 +71,13 @@ class UpdateTests(TestCase):
         logged_lines = log_output.readlines()
         message_logged = json.loads(logged_lines[0])
         self.assertEqual(
-            message_logged['obj_update']['model'], 'FooModel')
+            message_logged['model'], 'FooModel')
         self.assertEqual(
-            message_logged['obj_update']['pk'], foo.pk)
+            message_logged['pk'], foo.pk)
         self.assertEqual(
-            message_logged['obj_update']['changes']['text']['old'], 'hello')
+            message_logged['changes']['text']['old'], 'hello')
         self.assertEqual(
-            message_logged['obj_update']['changes']['text']['new'], 'hello2')
+            message_logged['changes']['text']['new'], 'hello2')
 
         logger.removeHandler(test_handler)
         logger.addHandler(handler)

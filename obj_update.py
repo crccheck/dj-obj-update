@@ -74,11 +74,9 @@ def obj_update(obj, data, *, save=True):
     logger.debug(
         human_log_formatter(dirty_data),
         extra={
-            'obj_update': {
-                'model': obj._meta.object_name,
-                'pk': obj.pk,
-                'changes': json_log_formatter(dirty_data),
-            },
+            'model': obj._meta.object_name,
+            'pk': obj.pk,
+            'changes': json_log_formatter(dirty_data),
         }
     )
     update_fields = list(map(itemgetter('field_name'), dirty_data))
@@ -94,8 +92,10 @@ def obj_update_or_create(model, defaults=None, **kwargs):
     """
     obj, created = model.objects.get_or_create(defaults=defaults, **kwargs)
     if created:
-        logger.debug('CREATED {} {}'.format(model._meta.object_name, obj.pk),
-                     extra={'obj_update': {'pk': obj.pk}})
+        logger.debug('CREATED %s %s',
+                     model._meta.object_name,
+                     obj.pk,
+                     extra={'pk': obj.pk})
     else:
         obj_update(obj, defaults)
     return obj, created
