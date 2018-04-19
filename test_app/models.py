@@ -12,5 +12,5 @@ class FooModel(models.Model):
 
 
 class BarModel(models.Model):
-    def __unicode__(self):
+    def __str__(self):
         raise NotImplementedError('update should not be looking at repr')
