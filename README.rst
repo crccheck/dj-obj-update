@@ -78,3 +78,11 @@ Using ``python-json-logger``::
     handler.setFormatter(JsonFormatter())
     logger.addHandler(handler)
     logger.setLevel(logging.DEBUG)
+
+With JSON logging, you'll get messages like::
+
+    {"message": "[text hello->hello2]", "model": "FooModel", "pk": 1, "changes": {"text": {"old": "hello", "new": "hello2"}}}
+
+With a normal logger, you'll still get output, but it won't have as much information::
+
+    [text hello->hello2]
