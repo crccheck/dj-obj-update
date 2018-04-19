@@ -1,11 +1,7 @@
 from __future__ import unicode_literals
 
 from decimal import Decimal
-try:
-    from StringIO import StringIO
-except ImportError:
-    # Python 3
-    from io import StringIO
+from io import StringIO
 import datetime
 import json
 import logging
@@ -16,7 +12,7 @@ from pythonjsonlogger.jsonlogger import JsonFormatter
 
 from test_app.models import FooModel, BarModel
 
-from obj_update import obj_update, obj_update_or_create, text_type
+from obj_update import obj_update, obj_update_or_create
 
 logger = logging.getLogger('obj_update')
 handler = logging.StreamHandler()
@@ -94,7 +90,7 @@ class UpdateTests(TestCase):
         # setup
         foo = FooModel.objects.create(datetime='2029-09-20 01:02:03')
         # sanity check
-        self.assertIsInstance(foo.datetime, text_type)
+        self.assertIsInstance(foo.datetime, str)
 
         with self.assertNumQueries(0):
             # 0 because input is exactly the same
@@ -129,7 +125,7 @@ class UpdateTests(TestCase):
         # setup
         foo = FooModel.objects.create(decimal='10.1')
         # sanity check
-        self.assertIsInstance(foo.decimal, text_type)
+        self.assertIsInstance(foo.decimal, str)
 
         with self.assertNumQueries(0):
             # 0 because input is exactly the same

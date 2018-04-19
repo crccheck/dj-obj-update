@@ -1,8 +1,5 @@
-from __future__ import unicode_literals
-
 from operator import itemgetter
 import logging
-import sys
 
 
 __all__ = ['obj_update', 'obj_update_or_create']
@@ -11,9 +8,6 @@ __version__ = '0.2.1'
 
 DIRTY = '_is_dirty'
 
-
-# for python 2/3 compatibility
-text_type = unicode if sys.version_info[0] < 3 else str  # noqa: F821
 
 logger = logging.getLogger('obj_update')
 
@@ -28,8 +22,8 @@ def set_field(obj, field_name, value):
         old_repr = None if old is None else getattr(old, 'pk', old)
         new_repr = None if value is None else getattr(value, 'pk', value)
     else:
-        old_repr = None if old is None else text_type(old)
-        new_repr = None if value is None else text_type(value)
+        old_repr = None if old is None else str(old)
+        new_repr = None if value is None else str(value)
     if old_repr != new_repr:
         setattr(obj, field_name, value)
         if not hasattr(obj, DIRTY):
