@@ -1,4 +1,4 @@
-VERSION=0.2.1
+VERSION=0.3.0
 
 help: ## Shows this help
 	@echo "$$(grep -h '#\{2\}' $(MAKEFILE_LIST) | sed 's/: #\{2\} /	/' | column -t -s '	')"
