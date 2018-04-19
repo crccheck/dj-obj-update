@@ -1,4 +1,5 @@
 from operator import itemgetter
+import datetime as dt
 import logging
 
 
@@ -12,22 +13,29 @@ DIRTY = '_is_dirty'
 logger = logging.getLogger('obj_update')
 
 
-def my_repr(v):
-    return str(v)
+def datetime_repr(value):
+    if isinstance(value, dt.datetime):
+        return value.isoformat()
+
+    return str(value)
 
 
 def set_field(obj, field_name, value):
     """Fancy setattr with debugging."""
     old = getattr(obj, field_name)
+    field = obj._meta.get_field(field_name)
     # is_relation is Django 1.8 only
-    if obj._meta.get_field(field_name).is_relation:
+    if field.is_relation:
         # If field_name is the `_id` field, then there is no 'pk' attr and
         # old/value *is* the pk
         old_repr = None if old is None else getattr(old, 'pk', old)
         new_repr = None if value is None else getattr(value, 'pk', value)
+    elif field.__class__.__name__ == 'DateTimeField':
+        old_repr = None if old is None else datetime_repr(old)
+        new_repr = None if value is None else datetime_repr(value)
     else:
-        old_repr = None if old is None else my_repr(old)
-        new_repr = None if value is None else my_repr(value)
+        old_repr = None if old is None else str(old)
+        new_repr = None if value is None else str(value)
     if old_repr != new_repr:
         setattr(obj, field_name, value)
         if not hasattr(obj, DIRTY):

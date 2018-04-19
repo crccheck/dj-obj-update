@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from decimal import Decimal
 from io import StringIO
-import datetime
+import datetime as dt
 import json
 import logging
 import os
@@ -86,40 +86,20 @@ class UpdateTests(TestCase):
     # MODEL FIELD TYPES
     ###################
 
-    def test_datetime_init_as_str(self):
-        # setup
-        foo = FooModel.objects.create(datetime='2029-09-20 01:02:03')
-        # sanity check
-        self.assertIsInstance(foo.datetime, str)
-
+    def test_datetime_vs_datetime(self):
+        foo = FooModel.objects.create(datetime=dt.datetime(2029, 9, 20, 1, 2, 3))
         with self.assertNumQueries(0):
-            # 0 because input is exactly the same
+            obj_update(foo, {'datetime': dt.datetime(2029, 9, 20, 1, 2, 3)})
+
+    def test_datetime_vs_str(self):
+        foo = FooModel.objects.create(datetime=dt.datetime(2029, 9, 20, 1, 2, 3))
+        with self.assertNumQueries(0):
             obj_update(foo, {'datetime': '2029-09-20 01:02:03'})
 
-        with self.assertNumQueries(0):
-            # 0 because input is python type that reprs the same
-            obj_update(foo, {'datetime': datetime.datetime(2029, 9, 20, 1, 2, 3)})
-
-        with self.assertNumQueries(0):
-            # 1 because input looks close, but not quite close enough
-            obj_update(foo, {'datetime': '2029-09-20T01:02:03'})
-
-    def test_datetime_init_as_datetime(self):
-        # setup
-        foo = FooModel.objects.create(datetime=datetime.datetime(2029, 9, 20, 1, 2, 3))
-        # sanity check
-        self.assertIsInstance(foo.datetime, datetime.datetime)
-
-        with self.assertNumQueries(0):
-            # 0 because input is exactly the same
-            obj_update(foo, {'datetime': datetime.datetime(2029, 9, 20, 1, 2, 3)})
-
-        with self.assertNumQueries(0):
-            # 0 because input is python type that reprs the same
-            obj_update(foo, {'datetime': '2029-09-20 01:02:03'})
-
+    def test_datetime_is_set(self):
+        foo = FooModel.objects.create(datetime=dt.datetime(2029, 9, 20, 1, 2, 3))
         with self.assertNumQueries(1):
-            obj_update(foo, {'datetime': datetime.datetime(1111, 1, 1, 1, 1, 1)})
+            obj_update(foo, {'datetime': dt.datetime(1111, 1, 1, 1, 1, 1)})
 
     def test_decimal_a_text(self):
         # setup
