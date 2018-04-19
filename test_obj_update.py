@@ -28,6 +28,14 @@ class UpdateTests(TestCase):
         foo = FooModel.objects.get(pk=foo.pk)
         self.assertEqual(foo.text, 'hello2')
 
+    def test_can_update_fields_but_not_save(self):
+        foo = FooModel.objects.create(text='hello')
+
+        with self.assertNumQueries(0):
+            obj_update(foo, {'text': 'hello2'}, save=False)
+
+        self.assertEqual(foo.text, 'hello2')
+
     def test_no_changes_mean_no_queries(self):
         # setup
         foo = FooModel.objects.create(text='hello')
