@@ -53,7 +53,7 @@ def json_log_formatter(dirty_data):
             for x in dirty_data}
 
 
-def obj_update(obj, data):
+def obj_update(obj, data, *, save=True):
     """
     Fancy way to update `obj` with `data` dict.
 
@@ -75,7 +75,8 @@ def obj_update(obj, data):
             }
         )
         update_fields = list(map(itemgetter('field_name'), dirty_data))
-        obj.save(update_fields=update_fields)
+        if save:
+            obj.save(update_fields=update_fields)
         delattr(obj, DIRTY)
         return True
 

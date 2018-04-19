@@ -6,6 +6,9 @@ help: ## Shows this help
 test: ## Run test suite
 	PYTHONPATH=. django-admin.py test --settings=test_settings
 
+tdd: ## Run test suite with a watcher
+	nodemon -e py -x "make test"
+
 clean: ## Remove temporary files
 	rm -rf MANIFEST
 	rm -rf build
