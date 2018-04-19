@@ -96,6 +96,10 @@ class UpdateTests(TestCase):
         with self.assertNumQueries(0):
             obj_update(foo, {'datetime': '2029-09-20 01:02:03'})
 
+        with self.assertNumQueries(0):
+            obj_update(foo, {'datetime': '2029-09-20T01:02:03'})
+
+
     def test_datetime_is_set(self):
         foo = FooModel.objects.create(datetime=dt.datetime(2029, 9, 20, 1, 2, 3))
         with self.assertNumQueries(1):

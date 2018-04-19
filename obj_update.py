@@ -15,9 +15,9 @@ logger = logging.getLogger('obj_update')
 
 def datetime_repr(value):
     if isinstance(value, dt.datetime):
-        return value.isoformat()
+        return value.isoformat().replace('+00:00', 'Z')
 
-    return str(value)
+    return str(value).replace(' ', 'T')
 
 
 def set_field(obj, field_name, value):
