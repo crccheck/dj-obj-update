@@ -4,7 +4,7 @@ import logging
 
 
 __all__ = ['obj_update', 'obj_update_or_create']
-__version__ = '0.3.0'
+__version__ = '0.4.0'
 
 
 DIRTY = '_is_dirty'
