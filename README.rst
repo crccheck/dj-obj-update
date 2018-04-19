@@ -35,7 +35,20 @@ Updating an object
     for obj in queryset:
         obj_update(obj, new_data)
 
-Updating an object
+Dry run updating an object
+''''''''''''''''''''''''''
+
+::
+
+    from obj_update import obj_update
+
+    logger.setLevel(logging.DEBUG)  # see "Logging changes" below
+
+    new_data = {
+        'flavor': 'chocolate',
+    }
+    for obj in queryset:
+        obj_update(obj, new_data, save=False)
 
 Replacement for ``update_or_create``
 ''''''''''''''''''''''''''''''''''''
