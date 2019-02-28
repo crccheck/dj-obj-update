@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from decimal import Decimal
 from io import StringIO
 import datetime as dt
@@ -7,6 +5,7 @@ import json
 import logging
 import os
 
+from django.db import transaction
 from django.test import TestCase, TransactionTestCase
 from pythonjsonlogger.jsonlogger import JsonFormatter
 
@@ -28,16 +27,37 @@ class UpdateTests(TestCase):
         with self.assertNumQueries(1):
             obj_update(foo, {'text': 'hello2'})
 
-        foo = FooModel.objects.get(pk=foo.pk)
+        foo.refresh_from_db()
         self.assertEqual(foo.text, 'hello2')
 
     def test_can_update_fields_but_not_save(self):
         foo = FooModel.objects.create(text='hello')
 
         with self.assertNumQueries(0):
+            obj_update(foo, {'text': 'hello2'}, update_fields=[])
+
+        self.assertEqual(foo.text, 'hello2')
+
+    def test_can_update_fields_but_not_save_DEPRECATED(self):
+        foo = FooModel.objects.create(text='hello')
+
+        with self.assertNumQueries(0):
             obj_update(foo, {'text': 'hello2'}, save=False)
 
         self.assertEqual(foo.text, 'hello2')
+
+    def test_update_fields_stuff(self):
+        foo = FooModel(text='hello')
+        # Sanity check: fails without update_fields
+        with transaction.atomic(), self.assertRaises(ValueError):
+            obj_update(foo, {'text': 'hello2'})
+
+        with self.assertNumQueries(1):
+            obj_update(foo, {'text': 'hello2'}, update_fields=None)
+
+        foo.refresh_from_db()
+        self.assertEqual(foo.text, 'hello2')
+        self.assertTrue(foo.id)
 
     def test_no_changes_mean_no_queries(self):
         # setup

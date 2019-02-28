@@ -1,13 +1,14 @@
 from operator import itemgetter
 import datetime as dt
 import logging
-
+from unittest.mock import sentinel
 
 __all__ = ['obj_update', 'obj_update_or_create']
 __version__ = '0.4.0'
 
 
 DIRTY = '_is_dirty'
+UNSET = sentinel.UNSET
 
 
 logger = logging.getLogger('obj_update')
@@ -59,18 +60,23 @@ def json_log_formatter(dirty_data):
             for x in dirty_data}
 
 
-def obj_update(obj, data, *, save=True):
+def obj_update(obj, data: dict, *, update_fields=UNSET, save: bool=True) -> bool:
     """
     Fancy way to update `obj` with `data` dict.
 
     Parameters
     ----------
     obj : Django model instance
-    data : dict
+    data
         The data to update ``obj`` with
-    save : bool
+    update_fields
+        Use your ``update_fields`` instead of our generated one. If you need
+        an auto_now or auto_now_add field to get updated, set this to ``None``
+        to get the default Django behavior.
+    save
         If save=False, then don't actually save. This can be useful if you
         just want to utilize the verbose logging.
+        DEPRECRATED in favor of the more standard ``update_fields=[]``
 
     Returns
     -------
@@ -91,14 +97,16 @@ def obj_update(obj, data, *, save=True):
             'changes': json_log_formatter(dirty_data),
         }
     )
-    update_fields = list(map(itemgetter('field_name'), dirty_data))
-    if save:
-        obj.save(update_fields=update_fields)
+    if update_fields == UNSET:
+        update_fields = list(map(itemgetter('field_name'), dirty_data))
+    if not save:
+        update_fields = ()
+    obj.save(update_fields=update_fields)
     delattr(obj, DIRTY)
     return True
 
 
-def obj_update_or_create(model, defaults=None, **kwargs):
+def obj_update_or_create(model, defaults=None, update_fields=UNSET, **kwargs):
     """
     Mimic queryset.update_or_create but using obj_update.
     """
@@ -109,5 +117,5 @@ def obj_update_or_create(model, defaults=None, **kwargs):
                      obj.pk,
                      extra={'pk': obj.pk})
     else:
-        obj_update(obj, defaults)
+        obj_update(obj, defaults, update_fields=update_fields)
     return obj, created

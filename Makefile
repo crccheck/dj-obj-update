@@ -4,7 +4,7 @@ help: ## Shows this help
 	@echo "$$(grep -h '#\{2\}' $(MAKEFILE_LIST) | sed 's/: #\{2\} /	/' | column -t -s '	')"
 
 test: ## Run test suite
-	PYTHONPATH=. django-admin.py test --settings=test_settings
+	PYTHONPATH=. django-admin.py test --settings=test_app.settings
 
 tdd: ## Run test suite with a watcher
 	nodemon -e py -x "make test || true"
