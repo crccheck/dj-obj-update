@@ -34,6 +34,14 @@ class UpdateTests(TestCase):
         foo = FooModel.objects.create(text='hello')
 
         with self.assertNumQueries(0):
+            obj_update(foo, {'text': 'hello2'}, update_fields=[])
+
+        self.assertEqual(foo.text, 'hello2')
+
+    def test_can_update_fields_but_not_save_DEPRECATED(self):
+        foo = FooModel.objects.create(text='hello')
+
+        with self.assertNumQueries(0):
             obj_update(foo, {'text': 'hello2'}, save=False)
 
         self.assertEqual(foo.text, 'hello2')

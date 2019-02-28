@@ -48,7 +48,7 @@ Dry run updating an object
         'flavor': 'chocolate',
     }
     for obj in queryset:
-        obj_update(obj, new_data, save=False)
+        obj_update(obj, new_data, update_fields=[])
 
 Replacement for ``update_or_create``
 ''''''''''''''''''''''''''''''''''''
