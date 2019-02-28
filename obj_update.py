@@ -1,17 +1,17 @@
 from operator import itemgetter
 import datetime as dt
 import logging
-
+from unittest.mock import sentinel
 
 __all__ = ['obj_update', 'obj_update_or_create']
 __version__ = '0.4.0'
 
 
 DIRTY = '_is_dirty'
+NotSet = sentinel.NotSet
 
 
 logger = logging.getLogger('obj_update')
-UNSET = object()
 
 
 def datetime_repr(value):
@@ -60,7 +60,7 @@ def json_log_formatter(dirty_data):
             for x in dirty_data}
 
 
-def obj_update(obj, data: dict, *, save: bool=True, update_fields=UNSET) -> bool:
+def obj_update(obj, data: dict, *, save: bool=True, update_fields=NotSet) -> bool:
     """
     Fancy way to update `obj` with `data` dict.
 
@@ -94,7 +94,7 @@ def obj_update(obj, data: dict, *, save: bool=True, update_fields=UNSET) -> bool
             'changes': json_log_formatter(dirty_data),
         }
     )
-    if update_fields == UNSET:
+    if update_fields == NotSet:
         update_fields = list(map(itemgetter('field_name'), dirty_data))
     if save:
         obj.save(update_fields=update_fields)
