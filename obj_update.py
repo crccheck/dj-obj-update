@@ -4,7 +4,7 @@ import logging
 from unittest.mock import sentinel
 
 __all__ = ['obj_update', 'obj_update_or_create']
-__version__ = '0.4.0'
+__version__ = '0.5.0'
 
 
 DIRTY = '_is_dirty'
