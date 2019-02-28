@@ -1,6 +1,7 @@
 language: python
+dist: xenial
 python:
-  "3.6"
+  "3.7"
 # Generate this env list with:
 # tox -l | awk '{ print "  - TOX_ENV="$0}'
 env:
@@ -10,6 +11,8 @@ env:
   - TOX_ENV=django111-py36
   - TOX_ENV=django20-py34
   - TOX_ENV=django20-py36
+  - TOX_ENV=django21-py35
+  - TOX_ENV=django21-py37
 install: pip install tox
 script: tox -e $TOX_ENV
 sudo: false
