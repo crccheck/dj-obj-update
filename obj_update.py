@@ -8,7 +8,7 @@ __version__ = '0.4.0'
 
 
 DIRTY = '_is_dirty'
-NotSet = sentinel.NotSet
+UNSET = sentinel.UNSET
 
 
 logger = logging.getLogger('obj_update')
@@ -60,7 +60,7 @@ def json_log_formatter(dirty_data):
             for x in dirty_data}
 
 
-def obj_update(obj, data: dict, *, update_fields=NotSet, save: bool=True) -> bool:
+def obj_update(obj, data: dict, *, update_fields=UNSET, save: bool=True) -> bool:
     """
     Fancy way to update `obj` with `data` dict.
 
@@ -97,7 +97,7 @@ def obj_update(obj, data: dict, *, update_fields=NotSet, save: bool=True) -> boo
             'changes': json_log_formatter(dirty_data),
         }
     )
-    if update_fields == NotSet:
+    if update_fields == UNSET:
         update_fields = list(map(itemgetter('field_name'), dirty_data))
     if not save:
         update_fields = ()
@@ -106,7 +106,7 @@ def obj_update(obj, data: dict, *, update_fields=NotSet, save: bool=True) -> boo
     return True
 
 
-def obj_update_or_create(model, defaults=None, update_fields=NotSet, **kwargs):
+def obj_update_or_create(model, defaults=None, update_fields=UNSET, **kwargs):
     """
     Mimic queryset.update_or_create but using obj_update.
     """
