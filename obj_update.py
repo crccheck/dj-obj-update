@@ -59,16 +59,16 @@ def json_log_formatter(dirty_data):
             for x in dirty_data}
 
 
-def obj_update(obj, data, *, save=True):
+def obj_update(obj, data: dict, *, save: bool=True) -> bool:
     """
     Fancy way to update `obj` with `data` dict.
 
     Parameters
     ----------
     obj : Django model instance
-    data : dict
+    data
         The data to update ``obj`` with
-    save : bool
+    save
         If save=False, then don't actually save. This can be useful if you
         just want to utilize the verbose logging.
 
