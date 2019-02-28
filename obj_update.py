@@ -73,7 +73,9 @@ def obj_update(obj, data: dict, *, save: bool=True, update_fields=NotSet) -> boo
         If save=False, then don't actually save. This can be useful if you
         just want to utilize the verbose logging.
     update_fields
-        Use your ``update_fields`` instead of our generated one
+        Use your ``update_fields`` instead of our generated one. If you need
+        an auto_now or auto_now_add field to get updated, set this to ``None``
+        to get the default Django behavior.
 
     Returns
     -------

@@ -65,6 +65,16 @@ Replacement for ``update_or_create``
 
 https://docs.djangoproject.com/en/2.0/ref/models/querysets/#update-or-create
 
+Dealing with ``auto_now`` fields
+''''''''''''''''''''''''''''''''
+
+By default, ``dj-obj-update`` constructs an ``update_fields`` when it saves.
+This means fields like the primary key, ``auto_now``, and ``auto_now_add``
+might not get saved. If you need this, you can set ``update_fields=None``.
+Usage is the same as Django's:
+
+https://docs.djangoproject.com/en/2.1/ref/models/instances/#specifying-which-fields-to-save
+
 Logging changes
 '''''''''''''''
 
