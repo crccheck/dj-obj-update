@@ -1,6 +1,9 @@
 language: python
 dist: xenial
 python:
+  "3.4"
+  "3.5"
+  "3.6"
   "3.7"
 # Generate this env list with:
 # tox -l | awk '{ print "  - TOX_ENV="$0}'
