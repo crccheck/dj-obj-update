@@ -11,6 +11,7 @@ DIRTY = '_is_dirty'
 
 
 logger = logging.getLogger('obj_update')
+UNSET = object()
 
 
 def datetime_repr(value):
@@ -59,7 +60,7 @@ def json_log_formatter(dirty_data):
             for x in dirty_data}
 
 
-def obj_update(obj, data: dict, *, save: bool=True) -> bool:
+def obj_update(obj, data: dict, *, save: bool=True, update_fields=UNSET) -> bool:
     """
     Fancy way to update `obj` with `data` dict.
 
@@ -71,6 +72,8 @@ def obj_update(obj, data: dict, *, save: bool=True) -> bool:
     save
         If save=False, then don't actually save. This can be useful if you
         just want to utilize the verbose logging.
+    update_fields
+        Use your ``update_fields`` instead of our generated one
 
     Returns
     -------
@@ -91,7 +94,8 @@ def obj_update(obj, data: dict, *, save: bool=True) -> bool:
             'changes': json_log_formatter(dirty_data),
         }
     )
-    update_fields = list(map(itemgetter('field_name'), dirty_data))
+    if update_fields == UNSET:
+        update_fields = list(map(itemgetter('field_name'), dirty_data))
     if save:
         obj.save(update_fields=update_fields)
     delattr(obj, DIRTY)
