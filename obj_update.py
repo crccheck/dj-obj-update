@@ -102,7 +102,7 @@ def obj_update(obj, data: dict, *, save: bool=True, update_fields=NotSet) -> boo
     return True
 
 
-def obj_update_or_create(model, defaults=None, **kwargs):
+def obj_update_or_create(model, defaults=None, update_fields=NotSet, **kwargs):
     """
     Mimic queryset.update_or_create but using obj_update.
     """
@@ -113,5 +113,5 @@ def obj_update_or_create(model, defaults=None, **kwargs):
                      obj.pk,
                      extra={'pk': obj.pk})
     else:
-        obj_update(obj, defaults)
+        obj_update(obj, defaults, update_fields=update_fields)
     return obj, created
