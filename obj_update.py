@@ -99,8 +99,9 @@ def obj_update(obj, data: dict, *, update_fields=NotSet, save: bool=True) -> boo
     )
     if update_fields == NotSet:
         update_fields = list(map(itemgetter('field_name'), dirty_data))
-    if save:
-        obj.save(update_fields=update_fields)
+    if not save:
+        update_fields = ()
+    obj.save(update_fields=update_fields)
     delattr(obj, DIRTY)
     return True
 
