@@ -5,6 +5,7 @@ import json
 import logging
 import os
 
+import django
 from django.db import transaction
 from django.test import TestCase, TransactionTestCase
 from pythonjsonlogger.jsonlogger import JsonFormatter
@@ -267,9 +268,10 @@ class ObjUpdateOrCreateTests(TransactionTestCase):
         self.assertEqual(foo.slug, "leopard")
 
         # Test updating with new data
-        with self.assertNumQueries(3):
+        num_queries = 3 if django.VERSION < (2, 2) else 2
+        with self.assertNumQueries(num_queries):
             # 1. SELECT
-            # 2. BEGIN
+            # 2. BEGIN if Django<2.2  Django no longer always starts a transaction when a single query is being performed https://docs.djangoproject.com/en/2.2/releases/2.2/
             # 3. INSERT
             foo, created = obj_update_or_create(
                 FooModel, text="hi", defaults={"slug": "lemon", "decimal": "0.01"}
