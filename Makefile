@@ -9,6 +9,9 @@ test: ## Run test suite
 tdd: ## Run test suite with a watcher
 	nodemon -e py -x "make test || true"
 
+lint: ## Check for lint errors
+	black . --check
+
 clean: ## Remove temporary files
 	rm -rf MANIFEST
 	rm -rf build
