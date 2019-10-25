@@ -20,3 +20,9 @@ matrix:
       env: TOX_ENV=django110-py34
 install: pip install tox
 script: tox -e $TOX_ENV
+
+branches:
+  only:
+    - master
+notifications:
+  email: false
