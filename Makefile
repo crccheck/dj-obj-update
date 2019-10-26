@@ -1,4 +1,4 @@
-VERSION=0.5.0
+VERSION = $$(grep __version__ obj_update.py | sed -r 's/.*"([.0-9]*)".*/\1/')
 
 help: ## Shows this help
 	@echo "$$(grep -h '#\{2\}' $(MAKEFILE_LIST) | sed 's/: #\{2\} /	/' | column -t -s '	')"
@@ -17,20 +17,15 @@ clean: ## Remove temporary files
 	rm -rf build
 	rm -rf dist
 	rm -rf *.egg-info
-	find . -name "*.pyc" -delete
-
-version:
-	@sed -i -r /version/s/[0-9.]+/$(VERSION)/ setup.py
-	@sed -i -r /__version__/s/[0-9.]+/$(VERSION)/ obj_update.py
 
 # Release instructions
-# 1. bump VERSION above
+# 1. bump the __version__ in `obj_update.py`
 # 2. run `make release`
 # 3. `git push --tags origin master`
-# 4. update release notes
+# TODO generate a changelog
 release: ## Cut a release and upload to PyPI
-release: clean version
-	@git commit -am "bump version to v$(VERSION)"
+release: clean
+	flit build
+	@git commit -am "v$(VERSION)"
 	@git tag $(VERSION)
-	@-pip install wheel > /dev/null
-	python setup.py sdist bdist_wheel upload
+	flit publish
