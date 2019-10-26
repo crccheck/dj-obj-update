@@ -1,19 +1,21 @@
 Django Object Update
 ====================
 
-[![image](https://travis-ci.org/crccheck/dj-obj-update.svg?branch=master)](https://travis-ci.org/crccheck/dj-obj-update)
+[![Build Status](https://travis-ci.org/crccheck/dj-obj-update.svg?branch=master)](https://travis-ci.org/crccheck/dj-obj-update)
 
 `dj-obj-update` is a module that helps you do two things while updating
 an object:
 
 1.  Only do a save if something changed
 2.  Log what changed (the logger name is `obj_update` and only outputs
-    DEBUG)
+    `logging.DEBUG`)
+
 
 Installation
 ------------
 
     pip install dj-obj-update
+
 
 Usage
 -----
