@@ -19,6 +19,7 @@ clean: ## Remove temporary files
 	rm -rf *.egg-info
 
 # Release instructions
+# 1. bump the __version__ in `obj_update.py`
 # 2. run `make release`
 # 3. `git push --tags origin master`
 # TODO generate a changelog
