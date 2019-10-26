@@ -1,3 +1,7 @@
+"""
+`dj-obj-update` helps you update an object but only saves if something changed.
+"""
+
 from operator import itemgetter
 import datetime as dt
 import logging
