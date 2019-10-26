@@ -6,24 +6,36 @@ script: tox -e $TOX_ENV
 
 jobs:
   include:
-    - python: 3.7
+    - stage: test
+      python: 3.7
       env: TOX_ENV=django22-py37
-    - python: 3.7
+    - stage: test
+      python: 3.7
       env: TOX_ENV=django21-py37
-    - python: 3.6
+    - stage: test
+      python: 3.6
       env: TOX_ENV=django20-py36
-    - python: 3.6
+    - stage: test
+      python: 3.6
       env: TOX_ENV=django111-py36
-    - python: 3.6
+    - stage: test
+      python: 3.6
       env: TOX_ENV=django110-py36
-    - python: 3.5
+    - stage: test
+      python: 3.5
       env: TOX_ENV=django21-py35
-    - python: 3.4
+    - stage: test
+      python: 3.4
       env: TOX_ENV=django20-py34
-    - python: 3.4
+    - stage: test
+      python: 3.4
       env: TOX_ENV=django111-py34
-    - python: 3.4
+    - stage: test
+      python: 3.4
       env: TOX_ENV=django110-py34
+    - stage: lint
+      install: pip install black
+      script: make lint
 
 branches:
   only:
