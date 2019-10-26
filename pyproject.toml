@@ -4,8 +4,18 @@ build-backend = "flit.buildapi"
 
 [tool.flit.metadata]
 module = "obj_update"
+dist-name = "dj-obj-update"
 author = "Chris Chang"
 author-email = "c@crccheck.com"
+description-file = "README.rst"
 home-page = "https://github.com/crccheck/obj_update"
-classifiers = ["License :: OSI Approved :: Apache Software License"]
+requires-python = ">=3.4"
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Framework :: Django",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+]
 
