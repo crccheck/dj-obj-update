@@ -7,7 +7,7 @@ module = "obj_update"
 dist-name = "dj-obj-update"
 author = "Chris Chang"
 author-email = "c@crccheck.com"
-description-file = "README.rst"
+description-file = "README.md"
 home-page = "https://github.com/crccheck/obj_update"
 requires-python = ">=3.4"
 classifiers = [
