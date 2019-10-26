@@ -1,0 +1,11 @@
+[build-system]
+requires = ["flit"]
+build-backend = "flit.buildapi"
+
+[tool.flit.metadata]
+module = "obj_update"
+author = "Chris Chang"
+author-email = "c@crccheck.com"
+home-page = "https://github.com/crccheck/obj_update"
+classifiers = ["License :: OSI Approved :: Apache Software License"]
+
