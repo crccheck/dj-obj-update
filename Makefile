@@ -19,10 +19,10 @@ clean: ## Remove temporary files
 # Release instructions
 # 2. run `make release`
 # 3. `git push --tags origin master`
-# 4. update release notes
+# TODO generate a changelog
 release: ## Cut a release and upload to PyPI
 release: clean
-	@git commit -am "bump version to v$(VERSION)"
+	flit build
+	@git commit -am "v$(VERSION)"
 	@git tag $(VERSION)
-	@-pip install wheel > /dev/null
-	python setup.py sdist bdist_wheel upload
+	flit publish
