@@ -13,10 +13,7 @@ lint: ## Check for lint errors
 	black . --check
 
 clean: ## Remove temporary files
-	rm -rf MANIFEST
-	rm -rf build
 	rm -rf dist
-	rm -rf *.egg-info
 
 # Release instructions
 # 1. bump the __version__ in `obj_update.py`
