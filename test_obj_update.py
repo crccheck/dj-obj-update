@@ -14,9 +14,7 @@ logging.config.dictConfig(
     {
         "version": 1,
         "formatters": {
-            "json": {
-                "class": "pythonjsonlogger.jsonlogger.JsonFormatter",
-            },
+            "json": {"class": "pythonjsonlogger.jsonlogger.JsonFormatter"},
         },
         "handlers": {
             "console": {"class": "logging.StreamHandler", "formatter": "json"},
