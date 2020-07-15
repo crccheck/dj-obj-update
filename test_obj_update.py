@@ -1,12 +1,9 @@
 import datetime as dt
 import json
 import logging.config
-import sys
-import unittest
 import os
 from decimal import Decimal
 from io import StringIO
-from unittest import skipIf
 
 import django
 from django.db import transaction
@@ -95,7 +92,6 @@ class UpdateTests(TestCase):
     # LOGGING
     #########
 
-    @unittest.skipIf(sys.version_info < (3, 4, 0), 'Requires Python 3.4 or greater')
     def test_logging(self):
         foo = FooModel.objects.create(text="hello")
 
