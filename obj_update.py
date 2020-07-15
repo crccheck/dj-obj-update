@@ -15,7 +15,8 @@ DIRTY = "_is_dirty"
 UNSET = sentinel.UNSET
 
 
-logger = logging.getLogger("obj_update")
+create_logger = logging.getLogger("obj_update.create")
+update_logger = logging.getLogger("obj_update.update")
 
 
 def datetime_repr(value):
@@ -92,7 +93,7 @@ def obj_update(obj, data: dict, *, update_fields=UNSET, save: bool = True) -> bo
     if not dirty_data:
         return False
 
-    logger.debug(
+    update_logger.debug(
         human_log_formatter(dirty_data),
         extra={
             "model": obj._meta.object_name,
@@ -115,8 +116,8 @@ def obj_update_or_create(model, defaults=None, update_fields=UNSET, **kwargs):
     """
     obj, created = model.objects.get_or_create(defaults=defaults, **kwargs)
     if created:
-        logger.debug(
-            "CREATED %s %s", model._meta.object_name, obj.pk, extra={"pk": obj.pk}
+        create_logger.debug(
+            "Created %s %s", model._meta.object_name, obj.pk, extra={"pk": obj.pk}
         )
     else:
         obj_update(obj, defaults, update_fields=update_fields)
