@@ -1,6 +1,6 @@
 import datetime as dt
 import json
-import logging
+import logging.config
 import os
 from decimal import Decimal
 from io import StringIO
@@ -15,10 +15,32 @@ from test_app.models import FooModel, BarModel
 from obj_update import obj_update, obj_update_or_create
 
 logger = logging.getLogger("obj_update")
-handler = logging.StreamHandler()
-handler.setFormatter(JsonFormatter())
-logger.addHandler(handler)
-logger.setLevel(getattr(logging, os.getenv("LOG_LEVEL", "CRITICAL")))
+# handler = logging.StreamHandler()
+# handler.setFormatter(JsonFormatter())
+# logger.addHandler(handler)
+# logger.setLevel(getattr(logging, os.getenv("LOG_LEVEL", "CRITICAL")))
+# logger2 = logging.getLogger("obj_update.create")
+# logger2.propagate = False
+# handler2 = logging.StreamHandler()
+# handler2.setFormatter(JsonFormatter())
+# logger2.addHandler(handler2)
+# logger2.setLevel(logging.DEBUG)
+logging.config.dictConfig(
+    {
+        "version": 1,
+        "formatters": {
+            "json": {
+                #    'format':
+                "class": "pythonjsonlogger.jsonlogger.JsonFormatter"
+            },
+            # "human": {},
+        },
+        "handlers": {
+            "console": {"class": "logging.StreamHandler", "formatter": "json"}
+        },
+        "loggers": {"obj_update": {"level": "INFO", "handlers": ["console"],}},
+    }
+)
 
 
 class UpdateTests(TestCase):
@@ -78,27 +100,17 @@ class UpdateTests(TestCase):
     #########
 
     def test_logging(self):
-        log_output = StringIO()
-        test_handler = logging.StreamHandler(stream=log_output)
-        test_handler.setFormatter(JsonFormatter())
-        logger.removeHandler(handler)
-        logger.addHandler(test_handler)
-        logger.setLevel(logging.DEBUG)
         foo = FooModel.objects.create(text="hello")
 
-        obj_update(foo, {"text": "hello2"})
+        with self.assertLogs('obj_update', level='DEBUG') as cm:
+            obj_update(foo, {"text": "hello2"})
 
-        log_output.seek(0)
-        logged_lines = log_output.readlines()
-        message_logged = json.loads(logged_lines[0])
-        self.assertEqual(message_logged["model"], "FooModel")
-        self.assertEqual(message_logged["pk"], foo.pk)
-        self.assertEqual(message_logged["changes"]["text"]["old"], "hello")
-        self.assertEqual(message_logged["changes"]["text"]["new"], "hello2")
-
-        logger.removeHandler(test_handler)
-        logger.addHandler(handler)
-        logger.setLevel(getattr(logging, os.getenv("LOG_LEVEL", "CRITICAL")))
+        self.assertEqual(len(cm.records), 1)
+        record = cm.records[0]
+        self.assertEqual(record.model, 'FooModel')
+        self.assertEqual(record.pk, foo.pk)
+        self.assertEqual(record.changes['text']['old'], 'hello')
+        self.assertEqual(record.changes['text']['new'], 'hello2')
 
     # MODEL FIELD TYPES
     ###################
