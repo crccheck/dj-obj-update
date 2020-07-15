@@ -2,9 +2,9 @@
 `dj-obj-update` helps you update an object but only saves if something changed.
 """
 
-from operator import itemgetter
 import datetime as dt
 import logging
+from operator import itemgetter
 from unittest.mock import sentinel
 
 __all__ = ["obj_update", "obj_update_or_create"]

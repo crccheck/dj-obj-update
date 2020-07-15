@@ -1,5 +1,4 @@
-Django Object Update
-====================
+# Django Object Update
 
 [![Build Status](https://travis-ci.org/crccheck/dj-obj-update.svg?branch=master)](https://travis-ci.org/crccheck/dj-obj-update)
 
@@ -10,15 +9,11 @@ an object:
 2.  Log what changed (the logger name is `obj_update` and only outputs
     `logging.DEBUG`)
 
-
-Installation
-------------
+## Installation
 
     pip install dj-obj-update
 
-
-Usage
------
+## Usage
 
 ### Updating an object
 
@@ -76,11 +71,11 @@ Using `python-json-logger`:
     logger.addHandler(handler)
     logger.setLevel(logging.DEBUG)
 
-With JSON logging, you\'ll get messages like:
+With JSON logging, you'll get messages like:
 
     {"message": "[text hello->hello2]", "model": "FooModel", "pk": 1, "changes": {"text": {"old": "hello", "new": "hello2"}}}
 
-With a normal logger, you\'ll still get output, but it won\'t have as
-much information:
+With a normal logger, you'll still get output, but it won't have as much
+information:
 
     [text hello->hello2]
