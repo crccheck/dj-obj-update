@@ -17,31 +17,24 @@ from test_app.models import FooModel, BarModel
 
 from obj_update import obj_update, obj_update_or_create
 
-logger = logging.getLogger("obj_update")
-# handler = logging.StreamHandler()
-# handler.setFormatter(JsonFormatter())
-# logger.addHandler(handler)
-# logger.setLevel(getattr(logging, os.getenv("LOG_LEVEL", "CRITICAL")))
-# logger2 = logging.getLogger("obj_update.create")
-# logger2.propagate = False
-# handler2 = logging.StreamHandler()
-# handler2.setFormatter(JsonFormatter())
-# logger2.addHandler(handler2)
-# logger2.setLevel(logging.DEBUG)
 logging.config.dictConfig(
     {
         "version": 1,
         "formatters": {
             "json": {
-                #    'format':
-                "class": "pythonjsonlogger.jsonlogger.JsonFormatter"
+                "class": "pythonjsonlogger.jsonlogger.JsonFormatter",
             },
-            # "human": {},
         },
         "handlers": {
-            "console": {"class": "logging.StreamHandler", "formatter": "json"}
+            "console": {"class": "logging.StreamHandler", "formatter": "json"},
+            "null": {"class": "logging.NullHandler", "formatter": "json"},
         },
-        "loggers": {"obj_update": {"level": "INFO", "handlers": ["console"],}},
+        "loggers": {
+            # Edit this config to play with these to test different logging scenarios
+            "obj_update": {"level": "DEBUG", "handlers": ["null"]},
+            # "obj_update.create": {"level": "DEBUG", "handlers": ["console"]},
+            # "obj_update.update": {"level": "DEBUG", "handlers": ["console"]},
+        },
     }
 )
 
