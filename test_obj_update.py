@@ -1,14 +1,10 @@
 import datetime as dt
-import json
 import logging.config
-import os
 from decimal import Decimal
-from io import StringIO
 
 import django
 from django.db import transaction
 from django.test import TestCase, TransactionTestCase
-from pythonjsonlogger.jsonlogger import JsonFormatter
 
 from test_app.models import FooModel, BarModel
 
