@@ -83,5 +83,5 @@ information:
 You can selectively log object creation or updates. For example, if you don't
 expect objects to be created, you can only enable the `obj_update.create`
 logger. Likewise, you can only enable the `obj_update.update` logger to ignore
-creation. See [test_obj_update](./test_obj_update) for an example logging
-config.
+creation. See the `logging.config` example at the top of
+[test_obj_update](./test_obj_update) for an example.
