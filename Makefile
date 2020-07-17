@@ -21,7 +21,7 @@ clean: ## Remove temporary files
 # 3. `git push --tags origin master`
 release: ## Cut a release and upload to PyPI
 release: clean
-	git add . && standard-version --commit-all --skip.tag --skip.commit --changelogHeader "# Changelog"
+	git add . && standard-version --commit-all --skip.tag --skip.commit --header "# Changelog"
 	flit build
 	@git commit -am "v$(VERSION)"
 	@git tag $(VERSION)
