@@ -3,4 +3,3 @@ black
 Django
 flit
 python-json-logger
-tox
