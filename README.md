@@ -1,6 +1,6 @@
 # Django Object Update
 
-[![Build Status](https://travis-ci.org/crccheck/dj-obj-update.svg?branch=master)](https://travis-ci.org/crccheck/dj-obj-update)
+[![CI](https://github.com/crccheck/dj-obj-update/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/crccheck/dj-obj-update/actions/workflows/ci.yml)
 
 `dj-obj-update` is a module that helps you do two things while updating
 an object:

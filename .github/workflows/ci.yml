@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  test-dj20:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.5", "3.6", "3.7"]
+    name: "Django 2.0 + Python ${{ matrix.python }}"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install python-json-logger "Django<2.1"
+      - run: DJANGO_SETTINGS_MODULE=test_app.settings PYTHONPATH=. django-admin.py test
+  test-dj21:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.6", "3.7"]
+    name: "Django 2.1 + Python ${{ matrix.python }}"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install python-json-logger "Django<2.2"
+      - run: DJANGO_SETTINGS_MODULE=test_app.settings PYTHONPATH=. django-admin.py test
+  test-dj30:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.6", "3.7", "3.8"]
+    name: "Django 3.0 + Python ${{ matrix.python }}"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install python-json-logger "Django<3.1"
+      - run: DJANGO_SETTINGS_MODULE=test_app.settings PYTHONPATH=. django-admin.py test
+
+  lint-black:
+    name: "Black"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+      - run: pip install black
+      - run: black --check .
